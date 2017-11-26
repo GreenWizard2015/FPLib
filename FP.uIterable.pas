@@ -16,6 +16,11 @@ type
     function GetEnumerator(): IIterator<T>;
   end;
 
+  IIterableByIndex<T> = interface
+    function Count(): Integer;
+    function Item(const ind: Integer): T;
+  end;
+
 //////////////////////////////////////
   FnMap<T, R> = reference to function(const Val: T): R;
 
