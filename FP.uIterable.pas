@@ -28,6 +28,8 @@ type
 
   FnAnonymeIterable<T> = reference to function(): IIterator<T>;
 
+  FnGenerator<T> = reference to function(out Val: T): Boolean;
+
   Sequence = class sealed
   public
     class function Of_<T>(const A: TEnumerable<T>): IIterable<T>; overload; static;
@@ -36,6 +38,8 @@ type
     class function Of_<T>(const A, B, C: T): IIterable<T>; overload; static;
     class function Of_<T>(const values: array of T): IIterable<T>; overload; static;
     class function Of_<T>(const F: FnAnonymeIterable<T>): IIterable<T>; overload; static;
+    // ugly, but ok for now
+    class function Of_<T>(const F: FnGenerator<T>): IIterable<T>; overload; static;
     /////////////////////////////////////////
     class function Empty<T>(): IIterable<T>; overload; static;
     /////////////////////////////////////////
@@ -50,7 +54,8 @@ implementation
 
 uses
   FP.Internals.usArray, FP.Internals.usFlatten, FP.Internals.uEmpty, FP.Internals.usAnonymeIterable,
-  FP.Internals.uFiltered, FP.Internals.uMapped, FP.Internals.uCroppedBy;
+  FP.Internals.uFiltered, FP.Internals.uMapped, FP.Internals.uCroppedBy,
+  FP.Internals.uGenerated;
 
 class function Sequence.Of_<T>(const A: T): IIterable<T>;
 begin
@@ -110,6 +115,11 @@ end;
 class function Sequence.Of_<T>(const A: TEnumerable<T>): IIterable<T>;
 begin
   Result := Of_<T>(A.ToArray());
+end;
+
+class function Sequence.Of_<T>(const F: FnGenerator<T>): IIterable<T>;
+begin
+  Result := CGenerated<T>.Create(F);
 end;
 
 end.
