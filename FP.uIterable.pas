@@ -16,7 +16,7 @@ type
     function GetEnumerator(): IIterator<T>;
   end;
 
-  IIterableByIndex<T> = interface
+  IIterableByIndex<T> = interface(IIterable<T>)
     function Count(): Integer;
     function Item(const ind: Integer): T;
   end;
