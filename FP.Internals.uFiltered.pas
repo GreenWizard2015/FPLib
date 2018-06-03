@@ -19,6 +19,7 @@ type
   strict private
     _filter: FnFilter<T>;
     _iterator: IIterator<T>;
+    _value: T;
     function getCurrent(): T;
     function MoveNext(): Boolean;
   public
@@ -51,14 +52,17 @@ end;
 
 function CfIterator<T>.getCurrent(): T;
 begin
-  Exit(_iterator.Current);
+  Exit(_value);
 end;
 
 function CfIterator<T>.MoveNext(): Boolean;
 begin
   while _iterator.MoveNext() do
-    if _filter(_iterator.Current) then
+  begin
+    _value := _iterator.Current;
+    if _filter(_value) then
       Exit(True);
+  end;
   Exit(False);
 end;
 
