@@ -16,45 +16,7 @@ type
 implementation
 
 uses
-  FP.uIterable;
-
-type
-  CTestIterator = class(TInterfacedObject, IIterator<Integer>)
-  strict private
-    _N: Integer;
-  public
-    constructor Create();
-    function getCurrent(): Integer;
-    function MoveNext(): Boolean;
-  end;
-
-constructor CTestIterator.Create();
-begin
-  inherited Create();
-  _N := 0;
-end;
-
-function CTestIterator.getCurrent(): Integer;
-begin
-  Result := _N;
-  Inc(_N);
-end;
-
-function CTestIterator.MoveNext(): Boolean;
-begin
-  Result := _N < 5;
-end;
-
-/////////////////////////////////////////
-
-function testSequence(): IIterable<Integer>;
-begin
-  Result := Sequence.Of_<Integer>(
-    function(): IIterator<Integer>
-    begin
-      Result := CTestIterator.Create();
-    end);
-end;
+  FP.uIterable, FP.uExtras;
 
 function acceptAny(const val: Integer): Boolean;
 begin
@@ -67,7 +29,7 @@ var
   seq: IIterable<Integer>;
 begin
   sum := 0;
-  seq := Sequence.Filter<Integer>(testSequence(), acceptAny);
+  seq := Sequence.Filter<Integer>(FPExtras.range(5), acceptAny);
   for i in seq do
     Inc(sum, i);
   // 0 + 1 + 2 + 3 + 4 = 10
